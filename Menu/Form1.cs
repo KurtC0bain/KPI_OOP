@@ -7,35 +7,90 @@ using Library;
 
 namespace RestaurantMenu
 {
+    /// <summary>
+    /// A partial class <c>Form</c> that is a menu of the restaurant
+    /// </summary>
+    /// <remarks>
+    /// <para>It presents GUI and combine all previous classes</para>
+    /// <para>Also it helps to operate with actions like button clicks, number choosing and other</para>
+    /// </remarks>
     public partial class Form1 : Form
     {
+        /// <summary>
+        /// Current number of dishes in the order
+        /// </summary>
         int countOfDishes = 0;
+        /// <summary>
+        /// Index of listBox1 chosen item. Main orientation
+        /// </summary>
         int indexOfDish = -1;
+        /// <summary>
+        /// Index of selected item in comboBox. Controls the listBox2 element's position
+        /// </summary>
         int indexOfComboBoxSelection = 0;
-
+        /// <summary>
+        /// A flag of changing selected items in comboBoxes and numericalUpDowns
+        /// </summary>
         bool ifChange = false;
+        /// <summary>
+        /// A flag that controls showing a message about discount only once for all the program working time
+        /// </summary>
         bool once = true;
-
+        /// <summary>
+        /// A variable of random-generated chance of a discount
+        /// </summary>
         int sale;
-
+        /// <summary>
+        /// An order to which dishes will be added
+        /// </summary>
         Order order;
+        /// <summary>
+        /// A database class instance; to get the info of dish from local MySQL database
+        /// </summary>
         DB dB;
+        /// <summary>
+        /// An imitation of customer's balance, money to pay for the order
+        /// </summary>
         Wallet wallet;
-
+        /// <summary>
+        /// An ID of dishes in database
+        /// </summary>
         int id;
+        /// <summary>
+        /// A temporary list of possible weight of the dish
+        /// </summary>
         List<int> weight = new List<int>();
+        /// <summary>
+        /// A temporary list of possible price of the dish
+        /// </summary>
         List<int> price = new List<int>();
+        /// <summary>
+        /// A temporary list of ingredients of the dish, helps to create a <typeparamref name="Product"/> list
+        /// </summary>
         List<string> productsTemp = new List<string>();
+        /// <summary>
+        /// A temporary list of <typeparamref name="Product"/> ingredients of the dish 
+        /// </summary>
         List<Product> products = new List<Product>();
-
+        /// <summary>
+        /// A list of existing <typeparamref name="ComboBox"/>  on a form
+        /// </summary>
         List<ComboBox> comboBoxes = new List<ComboBox>();
+        /// <summary>
+        /// A list of existing <typeparamref name="NumericUpDown"/>  on a form
+        /// </summary>
         List<NumericUpDown> upDowns = new List<NumericUpDown>();
-
+        /// <summary>
+        /// A method that determine an index of a <typeparamref name="NumericUpDown"/> in a list
+        /// </summary>
+        /// <param name="element">A numericUpDown index of which we want to know</param>
+        /// <returns>An index of a <typeparamref name="NumericUpDown"/> in a list</returns>
         private int Index(NumericUpDown element)
         {
             string indexOfEl = "";
             for (int i = 0; i < element.Name.Length; i++)
             {
+                //search by the name of comboBox, e.g. "comboBox1" 
                 if (Char.IsDigit(element.Name[i]))
                 {
                     indexOfEl += element.Name[i].ToString();
@@ -43,6 +98,11 @@ namespace RestaurantMenu
             }
             return Convert.ToInt32(indexOfEl) - 1;
         }
+        /// <summary>
+        /// A method that determine an index of a <typeparamref name="ComboBox"/> in a list
+        /// </summary>
+        /// <param name="element">A comboBox index of which we want to know</param>
+        /// <returns>An index of a <typeparamref name="ComboBox"/> in a list</returns>
         private int Index(ComboBox element)
         {
             string indexOfEl = "";
@@ -55,7 +115,9 @@ namespace RestaurantMenu
             }
             return Convert.ToInt32(indexOfEl) - 1;
         }
-
+        /// <summary>
+        /// A method that adds all comboBoxes and numericUpDowns to an appropriate list
+        /// </summary>
         private void MakeLists()
         {
             comboBoxes.Add(comboBox1); comboBoxes.Add(comboBox2); comboBoxes.Add(comboBox3);
@@ -66,6 +128,9 @@ namespace RestaurantMenu
             upDowns.Add(numericUpDown6); upDowns.Add(numericUpDown7); upDowns.Add(numericUpDown8);
             upDowns.Add(numericUpDown9); upDowns.Add(numericUpDown10);
         }
+        /// <summary>
+        /// A method that hides all specified elements from the form
+        /// </summary>
         private void HideAllElements()
         {
             if (comboBoxes.Count > 0 && upDowns.Count > 0)
@@ -78,7 +143,10 @@ namespace RestaurantMenu
             }
             button3.Hide(); button4.Hide(); label36.Hide();
         }
-
+        /// <summary>
+        /// A method that modifies listBox2 according to the changes made in some of comboBoxes
+        /// </summary>
+        /// <param name="comboBox">Current comboBox</param>
         private void ComboBoxChange(ComboBox comboBox)
         {
             if (countOfDishes > 0 && ifChange)
@@ -90,6 +158,10 @@ namespace RestaurantMenu
                 button3.Hide();
             }
         }
+        /// <summary>
+        /// A method that modifies listBox2 according to the changes made in some of numericUpDowns
+        /// </summary>
+        /// <param name="upDown">Current numericUpDown</param>
         private void UpDownChange(NumericUpDown upDown)
         {
             if (countOfDishes > 0 && ifChange)
@@ -606,5 +678,4 @@ namespace RestaurantMenu
         #endregion
 
     }
-    //updateckeck
 }

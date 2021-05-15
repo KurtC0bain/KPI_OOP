@@ -59,7 +59,6 @@
     <Compile Include="Wallet.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="LibraryClassDiagram.cd" />
     <None Include="mysql-connector-net-8.0.24.msi" />
   </ItemGroup>
