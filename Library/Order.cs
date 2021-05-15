@@ -16,46 +16,13 @@ namespace Library
         public double Sum { get { return _sum; } set { _sum = value; } }
         public Order()
         { }
-        public Order(Dish dish, int weight)
-        {
-            if (dish._weight[0] == weight)
-            {
-                dish._weight.RemoveAt(1);
-                dish._price.RemoveAt(1);
-            }
-            else
-            {
-                dish._weight.RemoveAt(0);
-                dish._price.RemoveAt(0);
-            }
-            order.Add(dish);
-            Sum += dish._price[0];
-        }
         public Order(Dish dish)
         {
             order.Add(dish);
-            Sum += dish._price[0];
-        }
-        public void OrderAdd(Dish dish, int weight)
-        {
-            if (dish._weight[0] == weight)
-            {
-                dish._weight.RemoveAt(1);
-                dish._price.RemoveAt(1);
-            }
-            else
-            {
-                dish._weight.RemoveAt(0);
-                dish._price.RemoveAt(0);
-
-            }
-            order.Add(dish);
-            Sum += dish._price[0];
         }
         public void OrderAdd(Dish dish)
         {
             order.Add(dish);
-            /*Sum += dish._price[0]*/;
         }
         public void OrderRemove(int index1)
         {
@@ -68,7 +35,6 @@ namespace Library
             {
                 if (order[i].Name == nameOfDish)
                 {
-                    Sum -= order[counter]._price[0];
                     order.RemoveAt(counter);
                 }
                 counter++;
