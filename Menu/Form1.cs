@@ -337,33 +337,47 @@ namespace RestaurantMenu
             this.FormBorderStyle = FormBorderStyle.None;
             this.WindowState = FormWindowState.Normal;
         }
+        /// <summary>
+        /// Event handler, when the red-cross button clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
             try
             {
+                //if nothing was selected in listBox1 then clear all order
                 if (indexOfDish == -1)
                 {
+                    //block making change with comboBoxes and numUpDowns
                     ifChange = false;
+                    //if there is at least one element on the order
                     if (listBox1.Items.Count != 0)
                     {
+                        //clear listBoxes
                         listBox1.Items.Clear();
                         listBox2.Items.Clear();
+                        //clear each dish price and weight
                         foreach (var item in order.order)
                         {
                             item._price.Clear();
                             item._weight.Clear();
                         }
+                        //clear order itself
                         order.order.Clear();
                         order.Sum = 0;
+                        //clearing comboBoxes
                         foreach (var item in comboBoxes)
                         {
                             item.Items.Clear();
                         }
+                        //clearing numUpDowns
                         foreach (var item in upDowns)
                         {
                             item.Value = 1;
                         }
                         HideAllElements();
+                        //set listBoxes height to minimum
                         listBox1.Height = 36;
                         listBox2.Height = 36;
                         countOfDishes = 0;
@@ -373,12 +387,13 @@ namespace RestaurantMenu
                     ifChange = true;
                     indexOfDish = -1;
                 }
+                //if some dish was chosen and the count of order in more than 0
                 if (indexOfDish >= 0 && listBox1.Items.Count != 0)
                 {
                     ifChange = false;
+                    //moving comboBox and numUpDowns value from end to the appropriate position
                     for (int i = indexOfDish; i < listBox1.Items.Count - 1; i++)
                     {
-                        
                         upDowns[i].Value = upDowns[i + 1].Value;
                         comboBoxes[i].Items.Clear();
                         int selectedIndex = comboBoxes[i + 1].SelectedIndex;
@@ -386,18 +401,21 @@ namespace RestaurantMenu
                         {
                             comboBoxes[i].Items.Add(item);
                         }
+                        //setting the first element
                         comboBoxes[i].SelectedItem = comboBoxes[i].Items[selectedIndex];
                     }
+                    //clearing the last used comboBox
                     comboBoxes[listBox1.Items.Count-1].Items.Clear();
                     upDowns[listBox1.Items.Count - 1].Value = 1;
+                    //hide last comboBox and numUpDowns
                     comboBoxes[listBox1.Items.Count-1].Hide();
                     upDowns[listBox1.Items.Count - 1].Hide();
                     button3.Hide();
-
+                    //remove the dish from the order and listBoxes
                     order.OrderRemove(indexOfDish);
                     listBox2.Items.RemoveAt(indexOfDish);
                     listBox1.Items.RemoveAt(indexOfDish);
-
+                    //if needed make height of listBoxes smaller
                     if (listBox1.Items.Count >= 1)
                     {
                         listBox1.Height -= 10;
@@ -407,17 +425,24 @@ namespace RestaurantMenu
                     countOfDishes--;
                 }
             }
+            //if there is nothing to delete
             catch (Exception exDelete)
             {
                 MessageBox.Show(exDelete.Message);
             }
             
         }
+        /// <summary>
+        /// A method for displaying ingredients of the dish
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button2_Click(object sender, EventArgs e)
         {
 
             try
             {
+                //check if the dish was chosen
                 if (indexOfDish == -1)
                 {
                     throw new Exception("Please, choose the dish first");
@@ -432,54 +457,82 @@ namespace RestaurantMenu
                 MessageBox.Show(exIngred.Message);
             }
         }
+        /// <summary>
+        /// A method for counting the sum of the order
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button4_Click(object sender, EventArgs e)
         {
             try
             {
+                //check if the customer has ordered something
                 if (listBox2.Items.Count > 0)
                 {
+                    //recount for each change
                     order.Sum = 0;
                     foreach (var item in listBox2.Items)
                     {
+                        //adding all chosen dish price
                         order.Sum += Convert.ToInt32(item.ToString());
                     }
+                    //if there is a discount today
                     if (sale % 3 == 0)
                     {
+                        //use discount
                         order.Sum -= order.Sum / 10;
                         if (once)
                         {
                             MessageBox.Show($"Today we have a discount for our guests!\nDo not pay for 1/10 part of your order!");
+                            //show the message about the discount, then it will never be used for that working time
                             once = false;
                         }
                     }
+                    //showing total sum
                     label36.Show();
                     label36.Text = $"TOTAL\n{order.Sum}";
                     button3.Show();
+                    //add special item if needed
                     AdditionalForFree();
 
                 }
                 else
                     throw new Exception("Please, make your order first");
             }
+            //if the order is empty
             catch (Exception emptyOrder)
             {
                 MessageBox.Show(emptyOrder.Message);
             }
 
         }
+        /// <summary>
+        /// A method that makes a purchase
+        /// <remarks>Imitation of real payment</remarks>
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button3_Click(object sender, EventArgs e)
         {
+            //check if the costumer has enough money
             if (wallet.Money >= order.Sum)
             {
+                //if does, make payment and close program
                 wallet.Money -= order.Sum;
                 MessageBox.Show("Purchase successful!\nWait for your order");
                 this.Close();
             }
             else
             {
+                //if does not then show a message about it
                 MessageBox.Show("Sorry, you do not have enough money!");
             }
         }
+        /// <summary>
+        /// A method that determine an index of chosen dish in listBox 1
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             indexOfDish = listBox1.SelectedIndex;
