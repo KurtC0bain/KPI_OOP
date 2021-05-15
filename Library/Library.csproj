@@ -51,6 +51,7 @@
     <Compile Include="Dish.cs" />
     <Compile Include="DrinksGroup.cs" />
     <Compile Include="IDish.cs" />
+    <Compile Include="LimitReachedException.cs" />
     <Compile Include="MeatGroup.cs" />
     <Compile Include="Order.cs" />
     <Compile Include="Product.cs" />
