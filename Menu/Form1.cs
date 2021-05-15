@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using Library;
 
-
 namespace RestaurantMenu
 {
     /// <summary>
@@ -173,27 +172,37 @@ namespace RestaurantMenu
                 button3.Hide();
             }
         }
+        /// <summary>
+        /// A method that is called when a customer click on a dish in menu
+        /// <remarks>It connects to the database and put info in appropriate place</remarks>
+        /// </summary>
+        /// <param name="linklabel">Current linklabel which customer clicked on</param>
         private void DishChosen(LinkLabel linklabel)
         {
             try
             {
+                //connect to the local database
                 dB.OpenConnection();
+                //command string
                 string sqlWeight = $"SELECT * FROM dish WHERE Name = '{linklabel.Text}'";
                 MySqlCommand command = new(sqlWeight, dB.connection);
                 MySqlDataReader reader = command.ExecuteReader();
-
+                //read while there is an info for the reader condition
                 while (reader.Read())
                 {
+                    //reading info about dish: weight, price, ingredients and ID
                     weight.Add(Convert.ToInt32(reader["Weight"]));
                     price.Add(Convert.ToInt32(reader["Price"]));
                     productsTemp.Add(reader["Ingredients"].ToString());
                     id = Convert.ToInt32(reader["ID"]);
                 }
+                //close reader and connections
                 reader.Close();
                 dB.CloseConnection();
 
                 foreach (var item in productsTemp)
                 {
+                    //creating product-class ingredients
                     products.Add(new Product(item));
                 }
                 productsTemp.Clear();
@@ -204,10 +213,13 @@ namespace RestaurantMenu
             }
             try
             {
+                //check the restaurant limitation of max. 10 dishes for one order
                 if (listBox1.Items.Count < 10)
                 {
+                    //check if the dish exists in the order
                     if (listBox1.Items.Contains(linklabel.Text))
                     {
+                        //variable to store a dish and index of them
                         string countOfExistingDish = "";
                         int indexOfExistingDish = 0;
                         for (int i = 0; i < order.order.Count; i++)
@@ -218,22 +230,24 @@ namespace RestaurantMenu
                                 countOfExistingDish += i.ToString();
                             }
                         }
+                        //check if it possible for the dish to exist more than once in the order
                         if (order.order[indexOfExistingDish]._weight.Count == countOfExistingDish.Length)
                             throw new AlreadyExistException();
                     }
-
+                    //make the number of dish in order greater
                     countOfDishes++;
+                    //block using changing methods for comboBoxes and numUpDowns
                     ifChange = false;
-
+                    //show appropriate elements on the form
                     comboBoxes[countOfDishes - 1].Show(); upDowns[countOfDishes - 1].Show();
                     button4.Show();
-
+                    //the listBox1 and listBox2 bigger if it is necessary
                     if (listBox1.Items.Count > 0)
                     {
                         listBox1.Height += 35;
                         listBox2.Height += 35;
                     }
-
+                    //if a customer added one of the special dish group, refer dish to them
                     Dish dish;
                     if (id >= 1 && id <= 7)
                         dish = new SoupGroup(linklabel.Text, weight, price);
@@ -243,7 +257,7 @@ namespace RestaurantMenu
                         dish = new DrinksGroup(linklabel.Text, weight, price);
                     else
                         dish = new(linklabel.Text, weight, price);
-
+                    //forming ingredients of the dish and add it to the order
                     dish.AddIngredient(products);
                     order.OrderAdd(dish);
 
@@ -251,27 +265,29 @@ namespace RestaurantMenu
 
                     if (comboBoxes[countOfDishes - 1].Items.Count > 0)
                         comboBoxes[countOfDishes - 1].Items.Clear();
-
+                    //adding new data to current comboBox
                     foreach (var item in weight)
                     {
                         comboBoxes[countOfDishes - 1].Items.Add(item);
                     }
-
+                    //show the first possible value of weight in comboBox
                     comboBoxes[countOfDishes - 1].SelectedItem = weight[0];
-
+                    //count the sum of current dish according to the weight and price
                     listBox2.Items.Add(order.order[countOfDishes - 1]._price[0] * upDowns[countOfDishes - 1].Value);
 
-
+                    //allow using changing methods for comboBoxes and numUpDowns
                     ifChange = true;
+                    //clear temporary elements
                     id = 0;
                     weight.Clear();
                     price.Clear();
                     products.Clear();
                 }
                 else
-                    throw new ArgumentException("Sorry, you can choose only 10 dishes for one bill");
+                    throw new LimitReachedException();
             }
-            catch (ArgumentException arg1)
+            //catch all necessary exceptions
+            catch (LimitReachedException arg1)
             {
                 MessageBox.Show(arg1.Message);
             }
@@ -280,30 +296,37 @@ namespace RestaurantMenu
                 MessageBox.Show(arg2.Message);
             }
         }
-
+        /// <summary>
+        /// A method for adding special free item for the order
+        /// </summary>
         private void AdditionalForFree()
         {
             for (int i = 0; i < order.order.Count; i++)
             {
                 if (order.order[i] is SoupGroup)
+                    //add bread for the soup dishes
                     order.order[i].needBread = true;
                 else if (order.order[i] is MeatGroup)
+                    //add sauce for meat or fish
                     order.order[i].needSauce = true;
                 else if (order.order[i] is DrinksGroup)
+                    //add sugar for warm drinks
                     order.order[i].needSugar = true;
             }
         }
-
+        /// <summary>
+        /// Starting form
+        /// </summary>
         public Form1()
         {
             InitializeComponent();
             order = new Order();
             dB = new();
             Random random = new();
-
+            //setting start value for costumer's money and if-discount
             wallet = new(random.Next(2000, 5000));
             sale = random.Next(1, 100);
-
+            //forming lists and hide all elements
             MakeLists();
             HideAllElements();
         }
