@@ -11,6 +11,7 @@ namespace Library
     {
         public List<Dish> order = new List<Dish>();
 
+
         private double _sum = 0;
         public double Sum { get { return _sum; } set { _sum = value; } }
         public Order()
@@ -34,7 +35,6 @@ namespace Library
         {
             order.Add(dish);
             Sum += dish._price[0];
-
         }
         public void OrderAdd(Dish dish, int weight)
         {
@@ -55,12 +55,11 @@ namespace Library
         public void OrderAdd(Dish dish)
         {
             order.Add(dish);
-            Sum += dish._price[0];
+            /*Sum += dish._price[0]*/;
         }
-        public void OrderRemove(int index)
+        public void OrderRemove(int index1)
         {
-            Sum -= order[index]._price[0];
-            order.RemoveAt(index);
+            order.RemoveAt(index1);
         }
         public void OrderRemove(string nameOfDish)
         {

@@ -7,11 +7,10 @@ using Library;
 
 namespace Library
 {
-    class DrinksGroup : Dish
+    public class DrinksGroup : Dish
     {
         public DrinksGroup(string name, List<int> weight, List<int> price) : base(name, weight, price)
         {
         }
-
     }
 }
