@@ -17,29 +17,29 @@
   <Class Name="Library.Dish" Collapsed="true">
     <Position X="9.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AgABIAAAAAAAIAAAIAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AgABYAAEAAAAIAAAIAAAAAQAAAIAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Dish.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="Library.DrinksGroup" Collapsed="true">
-    <Position X="5.25" Y="3.75" Width="1.5" />
+    <Position X="7.75" Y="3.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>DrinksGroup.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Library.MeatGroup" Collapsed="true">
-    <Position X="12" Y="3.75" Width="1.5" />
+    <Position X="9.75" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>MeatGroup.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Library.Order" Collapsed="true">
     <Position X="8.25" Y="5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAQAABAAgAAAEAAAAAAAAAAAAAAAAAAAAAAAAAACQ=</HashCode>
+      <HashCode>AAAAAAABAAgAAAEAAAAAAAAAAAAAAAAAAAAAAAAAACQ=</HashCode>
       <FileName>Order.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -51,9 +51,9 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Library.SoupGroup" Collapsed="true">
-    <Position X="14.25" Y="3.75" Width="1.5" />
+    <Position X="11.75" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SoupGroup.cs</FileName>
     </TypeIdentifier>
   </Class>

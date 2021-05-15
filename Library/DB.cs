@@ -10,9 +10,9 @@ using Library;
 
 namespace Library
 {
-    class DB
+    public class DB
     {
-        MySqlConnection connection = new MySqlConnection("server=localhost;user=root;database=uroborosmenu;password=admin");
+        public MySqlConnection connection = new MySqlConnection("server=localhost;user=root;database=uroborosmenu;password=admin");
         public void OpenConnection()
         {
             if (connection.State == System.Data.ConnectionState.Closed)
