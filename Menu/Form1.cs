@@ -19,7 +19,7 @@ namespace RestaurantMenu
         int sale;
 
         Order order;
-        MySqlConnection conn;
+        DB dB;
         Wallet wallet;
 
         int id;
@@ -30,9 +30,6 @@ namespace RestaurantMenu
 
         List<ComboBox> comboBoxes = new List<ComboBox>();
         List<NumericUpDown> upDowns = new List<NumericUpDown>();
-
-        string connStr = "server=localhost;user=root;database=uroborosmenu;password=admin;";
-
 
         private int Index(NumericUpDown element)
         {
@@ -108,11 +105,9 @@ namespace RestaurantMenu
         {
             try
             {
-                if (conn.State == System.Data.ConnectionState.Closed)
-                    conn.Open();
-
+                dB.OpenConnection();
                 string sqlWeight = $"SELECT * FROM dish WHERE Name = '{linklabel.Text}'";
-                MySqlCommand command = new(sqlWeight, conn);
+                MySqlCommand command = new(sqlWeight, dB.connection);
                 MySqlDataReader reader = command.ExecuteReader();
 
                 while (reader.Read())
@@ -123,9 +118,8 @@ namespace RestaurantMenu
                     id = Convert.ToInt32(reader["ID"]);
                 }
                 reader.Close();
+                dB.CloseConnection();
 
-                if (conn.State == System.Data.ConnectionState.Closed)
-                    conn.Open();
                 foreach (var item in productsTemp)
                 {
                     products.Add(new Product(item));
@@ -232,7 +226,7 @@ namespace RestaurantMenu
         {
             InitializeComponent();
             order = new Order();
-            conn = new(connStr);
+            dB = new();
             Random random = new();
 
             wallet = new(random.Next(2000, 5000));
@@ -367,7 +361,6 @@ namespace RestaurantMenu
                     label36.Text = $"TOTAL\n{order.Sum}";
                     button3.Show();
                     AdditionalForFree();
-                    MessageBox.Show(order.order[0].needBread.ToString());
 
                 }
                 else
