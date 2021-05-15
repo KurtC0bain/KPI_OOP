@@ -12,10 +12,17 @@ namespace RestaurantMenu
         int countOfDishes = 0;
         int indexOfDish = -1;
         int indexOfComboBoxSelection = 0;
+
         bool ifChange = false;
+        bool once = true;
+
+        int sale;
+
         Order order;
         MySqlConnection conn;
+        Wallet wallet;
 
+        int id;
         List<int> weight = new List<int>();
         List<int> price = new List<int>();
         List<string> productsTemp = new List<string>();
@@ -25,6 +32,8 @@ namespace RestaurantMenu
         List<NumericUpDown> upDowns = new List<NumericUpDown>();
 
         string connStr = "server=localhost;user=root;database=uroborosmenu;password=admin;";
+
+
         private int Index(NumericUpDown element)
         {
             string indexOfEl = "";
@@ -95,15 +104,6 @@ namespace RestaurantMenu
                 button3.Hide();
             }
         }
-
-        public Form1()
-        {
-            InitializeComponent();
-            order = new Order();
-            conn = new(connStr);
-            MakeLists();
-            HideAllElements();
-        }
         private void DishChosen(LinkLabel linklabel)
         {
             try
@@ -120,6 +120,7 @@ namespace RestaurantMenu
                     weight.Add(Convert.ToInt32(reader["Weight"]));
                     price.Add(Convert.ToInt32(reader["Price"]));
                     productsTemp.Add(reader["Ingredients"].ToString());
+                    id = Convert.ToInt32(reader["ID"]);
                 }
                 reader.Close();
 
@@ -151,67 +152,52 @@ namespace RestaurantMenu
                                 countOfExistingDish += i.ToString();
                             }
                         }
-                        if(order.order[indexOfExistingDish]._weight.Count == countOfExistingDish.Length)
+                        if (order.order[indexOfExistingDish]._weight.Count == countOfExistingDish.Length)
                             throw new AlreadyExistException();
                     }
 
                     countOfDishes++;
                     ifChange = false;
+
                     comboBoxes[countOfDishes - 1].Show(); upDowns[countOfDishes - 1].Show();
                     button4.Show();
 
-                    if (listBox1.Items.Count /* mb <= */ == 0)
+                    if (listBox1.Items.Count > 0)
                     {
-                        Dish dish = new(linklabel.Text, weight, price);
-                        dish.AddIngredient(products);
-                        order.order.Add(dish);
-
-                        listBox1.Items.Add(linklabel.Text);
-
-                        if (comboBoxes[countOfDishes-1].Items.Count > 0)
-                            comboBoxes[countOfDishes-1].Items.Clear();
-
-                        foreach (var item in weight)
-                        {
-                            comboBoxes[countOfDishes-1].Items.Add(item);
-                        }
-
-                        comboBoxes[countOfDishes-1].SelectedItem = weight[0];
-                        
-                        listBox2.Items.Add(order.order[countOfDishes-1]._price[0] * upDowns[countOfDishes - 1].Value);
-
-                        weight.Clear();
-                        price.Clear();
-                        products.Clear();
-                    }
-                    else
-                    {
-                        Dish dish = new(linklabel.Text, weight, price);
-                        dish.AddIngredient(products);
-                        order.order.Add(dish);
-
-                        listBox1.Items.Add(linklabel.Text);
                         listBox1.Height += 35;
-
-                        if (comboBoxes[countOfDishes - 1].Items.Count > 0)
-                            comboBoxes[countOfDishes - 1].Items.Clear();
-
-                        foreach (var item in weight)
-                        {
-                            comboBoxes[countOfDishes-1].Items.Add(item);
-                        }
-
-
-                        comboBoxes[countOfDishes-1].SelectedItem = weight[0];
-                        listBox2.Items.Add(order.order[countOfDishes - 1]._price[0] * upDowns[countOfDishes - 1].Value);
                         listBox2.Height += 35;
-
-                        weight.Clear();
-                        price.Clear();
-                        products.Clear();
                     }
+
+                    Dish dish;
+                    if (id >= 1 && id <= 7)
+                        dish = new SoupGroup(linklabel.Text, weight, price);
+                    else if (id >= 18 && id <= 22)
+                        dish = new MeatGroup(linklabel.Text, weight, price);
+                    else if (id >= 28 && id <= 31)
+                        dish = new DrinksGroup(linklabel.Text, weight, price);
+                    else
+                        dish = new(linklabel.Text, weight, price);
+
+                    dish.AddIngredient(products);
+                    order.OrderAdd(dish);
+
+                    listBox1.Items.Add(linklabel.Text);
+
+                    if (comboBoxes[countOfDishes - 1].Items.Count > 0)
+                        comboBoxes[countOfDishes - 1].Items.Clear();
+
+                    foreach (var item in weight)
+                    {
+                        comboBoxes[countOfDishes - 1].Items.Add(item);
+                    }
+
+                    comboBoxes[countOfDishes - 1].SelectedItem = weight[0];
+
+                    listBox2.Items.Add(order.order[countOfDishes - 1]._price[0] * upDowns[countOfDishes - 1].Value);
+
 
                     ifChange = true;
+                    id = 0;
                     weight.Clear();
                     price.Clear();
                     products.Clear();
@@ -228,6 +214,34 @@ namespace RestaurantMenu
                 MessageBox.Show(arg2.Message);
             }
         }
+
+        private void AdditionalForFree()
+        {
+            for (int i = 0; i < order.order.Count; i++)
+            {
+                if (order.order[i] is SoupGroup)
+                    order.order[i].needBread = true;
+                else if (order.order[i] is MeatGroup)
+                    order.order[i].needSauce = true;
+                else if (order.order[i] is DrinksGroup)
+                    order.order[i].needSugar = true;
+            }
+        }
+
+        public Form1()
+        {
+            InitializeComponent();
+            order = new Order();
+            conn = new(connStr);
+            Random random = new();
+
+            wallet = new(random.Next(2000, 5000));
+            sale = random.Next(1, 100);
+
+            MakeLists();
+            HideAllElements();
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             this.TopMost = true;
@@ -245,7 +259,13 @@ namespace RestaurantMenu
                     {
                         listBox1.Items.Clear();
                         listBox2.Items.Clear();
+                        foreach (var item in order.order)
+                        {
+                            item._price.Clear();
+                            item._weight.Clear();
+                        }
                         order.order.Clear();
+                        order.Sum = 0;
                         foreach (var item in comboBoxes)
                         {
                             item.Items.Clear();
@@ -283,8 +303,9 @@ namespace RestaurantMenu
                     upDowns[listBox1.Items.Count - 1].Value = 1;
                     comboBoxes[listBox1.Items.Count-1].Hide();
                     upDowns[listBox1.Items.Count - 1].Hide();
+                    button3.Hide();
 
-                    order.order.RemoveAt(indexOfDish);
+                    order.OrderRemove(indexOfDish);
                     listBox2.Items.RemoveAt(indexOfDish);
                     listBox1.Items.RemoveAt(indexOfDish);
 
@@ -333,10 +354,21 @@ namespace RestaurantMenu
                     {
                         order.Sum += Convert.ToInt32(item.ToString());
                     }
-
+                    if (sale % 3 == 0)
+                    {
+                        order.Sum -= order.Sum / 10;
+                        if (once)
+                        {
+                            MessageBox.Show($"Today we have a discount for our guests!\nDo not pay for 1/10 part of your order!");
+                            once = false;
+                        }
+                    }
                     label36.Show();
                     label36.Text = $"TOTAL\n{order.Sum}";
                     button3.Show();
+                    AdditionalForFree();
+                    MessageBox.Show(order.order[0].needBread.ToString());
+
                 }
                 else
                     throw new Exception("Please, make your order first");
@@ -349,12 +381,20 @@ namespace RestaurantMenu
         }
         private void button3_Click(object sender, EventArgs e)
         {
-
+            if (wallet.Money >= order.Sum)
+            {
+                wallet.Money -= order.Sum;
+                MessageBox.Show("Purchase successful!\nWait for your order");
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Sorry, you do not have enough money!");
+            }
         }
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             indexOfDish = listBox1.SelectedIndex;
-            //MessageBox.Show(indexOfDish.ToString());
         }
 
 
@@ -573,4 +613,5 @@ namespace RestaurantMenu
         #endregion
 
     }
+    //updateckeck
 }

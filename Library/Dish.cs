@@ -9,6 +9,10 @@ namespace Library
 {
     public class Dish : IDish
     {
+        public bool needSauce = false;
+        public bool needBread = false;
+        public bool needSugar = false;
+
         public Dish(string name, List<int> weight, List<int> price)
         {
             for (int i = 0; i < weight.Count; i++)

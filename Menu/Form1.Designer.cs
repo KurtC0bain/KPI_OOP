@@ -899,9 +899,9 @@ namespace RestaurantMenu
             this.label17.Font = new System.Drawing.Font("Castellar", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.label17.Location = new System.Drawing.Point(739, 227);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(52, 14);
+            this.label17.Size = new System.Drawing.Size(48, 14);
             this.label17.TabIndex = 58;
-            this.label17.Text = "70/600";
+            this.label17.Text = "70/350";
             // 
             // label18
             // 

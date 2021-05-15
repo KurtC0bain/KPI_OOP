@@ -12,6 +12,5 @@ namespace Library
         public MeatGroup(string name, List<int> weight, List<int> price) : base(name, weight, price)
         {
         }
-
     }
 }
