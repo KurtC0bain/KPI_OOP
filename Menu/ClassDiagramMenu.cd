@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="RestaurantMenu.Form1">
+    <Position X="4.75" Y="1.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>/wBVN7kbUiOihRB0APzn/A4DwkB8Mj86TfUojJ1My3A=</HashCode>
+      <FileName>Form1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
